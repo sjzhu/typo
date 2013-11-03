@@ -41,6 +41,12 @@ Given /^the blog is set up$/ do
                 :profile_id => 1,
                 :name => 'admin',
                 :state => 'active'})
+  User.create!({:login => 'test',
+                :password => 'testing',
+                :email => 'test@test',
+                :profile_id => 2,
+                :name => 'test',
+                :state => 'active'})
 end
 
 And /^I am logged into the admin panel$/ do
@@ -54,6 +60,49 @@ And /^I am logged into the admin panel$/ do
     assert page.has_content?('Login successful')
   end
 end
+
+And /^I am logged in as "(.*)"$/ do | usrname |
+  visit '/accounts/login'
+  fill_in 'user_login', :with => usrname
+  fill_in 'user_password', :with => 'testing'
+  click_button 'Login'
+  if page.respond_to? :should
+    page.should have_content('Login successful')
+  else
+    assert page.has_content?('Login successful')
+  end
+end
+
+And /^the blog has the article "(.*)" with the body "(.*)"$/ do | title, content |
+  visit '/admin/content/new'
+  fill_in 'article_title', :with => title
+  fill_in 'article__body_and_extended_editor', :with => content
+  click_button 'Publish'
+  if page.respond_to? :should
+    page.should have_content('Article was successfully created')
+  else
+    assert page.has_content?('Article was successfully created')
+  end
+end
+
+And /^I log out$/ do
+  visit '/accounts/logout'
+  if page.respond_to? :should
+    page.should have_content('Successfully logged out')
+  else
+    assert page.has_content('Successfully logged out')
+  end
+end
+
+#And /^I am on the article page for "(.*)"$/ do | title |
+#  @article = Article.find_by_title(title)
+#  visit "/admin/content/edit/#{@article.id}"
+#  if page.respond_to? :should
+#    page.should have_content(title)
+#  else
+#    assert page.has_content?(title)
+#  end
+#end
 
 # Single-line step scoper
 When /^(.*) within (.*[^:])$/ do |step, parent|
