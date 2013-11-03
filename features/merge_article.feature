@@ -10,12 +10,12 @@ Feature: Merge Articles
     And the blog has the article "Test 2" with the body "Test harder"
     And I log out
 
-  Scenario: Only admins can merge articles
+  Scenario: A non-admin cannot merge two articles
     Given I am logged in as "test"
     And I am on the article page for "Test"
     Then I should not see "Merge Articles"
 
-  Scenario: Successfully merging articles
+  Scenario: When articles are merged, the merged article should contain the text of both previous articles
     Given I am logged into the admin panel
     And I am on the article page for "Test"
     And I fill in "merge_with" with "2"
