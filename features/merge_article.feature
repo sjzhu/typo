@@ -18,8 +18,8 @@ Feature: Merge Articles
   Scenario: When articles are merged, the merged article should contain the text of both previous articles
     Given I am logged into the admin panel
     And I am on the article page for "Test"
-    And I fill in "merge_with" with "2"
+    And I fill in "merge_with" with "1"
     And I press "Merge"
     Then I should be on the article page for "Test"
     Then I should see "More test"
-    Then I should see "Test harder"
+    Then I should see "Welcome to Typo. This is your first article. Edit or delete it, then start blogging!"
