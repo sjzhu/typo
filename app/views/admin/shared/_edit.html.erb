@@ -4,6 +4,7 @@
   <%= render :partial => "form" %>
 
 <% end %>
+<% unless @article.nil? %>
 <form style="display: <%= @merge_display %>;" method="post" action="/admin/content/merge/<%= @article.id %>">
   <h3>Merge Articles</h3>
   <label for="merge_with" style="float: none;">Article ID</label>
@@ -11,3 +12,4 @@
   <br>
   <input type="submit" value="Merge"></input>
 </form>
+<% end %>
