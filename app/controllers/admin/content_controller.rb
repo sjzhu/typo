@@ -11,6 +11,15 @@ class Admin::ContentController < Admin::BaseController
     render :inline => "<%= raw auto_complete_result @items, 'name' %>"
   end
 
+  def merge
+    @merge_into = Article.find_by_id(params[:id])
+    unless @merge_into.merge(params[:merge_with]).nil?
+      redirect_to "/admin/content/edit/#{@merge_into.id}"
+    else 
+      redirect_to :action => 'index'
+    end
+  end
+
   def index
     @search = params[:search] ? params[:search] : {}
     
@@ -242,4 +251,5 @@ class Admin::ContentController < Admin::BaseController
   def setup_resources
     @resources = Resource.by_created_at
   end
+
 end

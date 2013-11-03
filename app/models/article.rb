@@ -71,6 +71,21 @@ class Article < Content
     end
   end
 
+  def merge(merge_with) 
+    begin
+      merge_from = Article.find(merge_with)
+    rescue ActiveRecord::RecordNotFound
+      return nil
+    end
+    self.body = self.body + merge_from.body
+    merge_from.feedback.each do |comment|
+      self.add_comment({author: comment.author, body: comment.body})
+    end
+    self.save
+    merge_from.destroy
+    return self
+  end
+
   def set_permalink
     return if self.state == 'draft'
     self.permalink = self.title.to_permalink if self.permalink.nil? or self.permalink.empty?
