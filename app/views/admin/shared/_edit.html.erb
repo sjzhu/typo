@@ -4,3 +4,10 @@
   <%= render :partial => "form" %>
 
 <% end %>
+<form style="display: <%= @merge_display %>;">
+  <h3>Merge Articles</h3>
+  <label for="merge_with" style="float: none;">Article ID</label>
+  <input type="text" name="merge_with"></input>
+  <br>
+  <input type="submit" value="Merge"></input>
+</form>
