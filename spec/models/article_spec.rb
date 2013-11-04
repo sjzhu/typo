@@ -14,10 +14,68 @@ describe Article do
     @articles = []
   end
 
+  def published_article
+    Factory(:article, :published_at => Time.now - 1.hour)
+  end
+
+  def second_article
+      Factory(:article, :title => 'A new article', :body => 'More content with more data', :published_at => Time.now - 1.hour)
+  end
+
+  def valid_comment(options={})
+    Comment.new({:author => 'Bob',
+                :article => published_article,
+                :body => 'nice post',
+                :ip => '1.2.3.4'}.merge(options))
+  end
+
   def assert_results_are(*expected)
     assert_equal expected.size, @articles.size
     expected.each do |i|
       assert @articles.include?(i.is_a?(Symbol) ? contents(i) : i)
+    end
+  end
+
+  describe '#merge' do
+    before(:each) do
+      Factory(:blog)
+      @article = Article.new(:title => 'A big article', :body => 'Stuff', :published_at => Time.now - 1.hour, :user => Factory(:user), :allow_comments => true, :published => true)
+      @article2 = @article.clone
+      @article2.title = 'Another article'
+      @article2.body = 'More than stuff. Things.'
+      @comment = Factory(:comment, :body => 'first comment', :article => @article)
+      @comment2 = Factory(:comment, :body => 'Second comment', :article => @article2)
+    end
+
+    it 'should contain the text of both articles after a merge' do
+      text1 = @article.body
+      text2 = @article2.body
+      @article.merge(@article2.id)
+      assert (@article.body.include?(text1) && @article.body.include?(text2))
+    end
+
+    it 'should have one of the authors after a merge' do
+      text1 = @article.user
+      text2 = @article2.user
+      @article.merge(@article2.id)
+      assert (@article.user == text1)
+    end
+
+    it 'should have both articles comments after a merge' do
+      comments1 = @article.feedback
+      comments2 = @article2.feedback
+      @article.merge(@article2.id)
+      comments = comments1 + comments2
+      comments.each do |comment|
+        assert(not(@article.feedback.index(comment).nil?), "Index was: #{@article.feedback.index(comment)}")
+      end
+    end
+
+    it 'should have one of the titles after a merge' do
+      text1 = @article.title
+      text2 = @article2.title
+      @article.merge(@article2.id)
+      assert (@article.title == text1)
     end
   end
 
