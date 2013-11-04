@@ -190,7 +190,7 @@ class Admin::ContentController < Admin::BaseController
     @resources = Resource.without_images_by_filename
     @macros = TextFilter.macro_filters
 
-    @merge_display = current_user.profile_id != 1 ? "none" : "block"
+    @merge_display = current_user.profile_id != 1 ? false : true
     render 'new'
   end
 
